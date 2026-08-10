@@ -42,3 +42,48 @@ regularization shrinks the weight norm smoothly as λ increases but barely
 moves test accuracy or F1, indicating the unregularized model was not
 strongly overfitting to begin with; λ = 0.01 is selected as a low-cost
 safeguard against overfitting on unseen data.
+
+## SageMaker Training and Testing
+
+### Environment
+
+The notebook (`heart_disease_lr_analysis.ipynb`) and the dataset
+(`heart.csv`) were uploaded to a JupyterLab notebook instance in the
+AWS Academy Learner Lab SageMaker environment (domain
+`default-1785856545753`, space `quickstart-default-q4e8wq`), running a
+`Python 3 (ipykernel)` kernel. No endpoint or model deployment service
+was created or used, per the account limitation for this course.
+
+![Heart Disease Analysis](images/image.png)
+
+### Process
+
+The same code used for the local run was executed unmodified inside the
+SageMaker notebook: data loading/cleaning, feature standardization,
+gradient descent training of the logistic regression model, and
+evaluation on the held-out test set. The cost-vs-iteration plot below
+confirms the training loop ran to completion and converged the same way
+it did locally, flattening out well before 5000 iterations.
+
+![alt text](images/image2.png)
+
+### Test Results
+
+| | accuracy | precision | recall | f1 |
+|---|---|---|---|---|
+| train | 0.8213 | 0.8049 | 0.8839 | 0.8426 |
+| test | 0.7079 | 0.6897 | 0.8333 | 0.7547 |
+
+![alt text](images/image3.png)
+
+### Comparison with Local Execution
+
+The metrics obtained in SageMaker are identical to the ones from the
+local run (train accuracy 0.8213 / test accuracy 0.7079, same
+precision/recall/F1 on both splits). This is expected: the algorithm is
+deterministic, the same cleaned dataset and hyperparameters (learning
+rate, iterations, λ) were used, and no random components (e.g., random
+initialization or shuffling) affect the outcome. The main practical
+difference is execution environment, not results — SageMaker was used
+purely to validate that the model trains and evaluates correctly outside
+the local machine.
